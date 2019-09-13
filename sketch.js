@@ -21,7 +21,7 @@ const resetSimulation = () => {
   angleDiff = 0;
   angleStep = 0.0001;
   fractionDiff = 1/2;
-  fractionStep = 0.0001;
+  fractionStep = 0.00001;
 };
 
 window.onload = function() {
@@ -30,12 +30,42 @@ window.onload = function() {
 
 document.addEventListener('keyup', e => {
   if (e.code === 'ArrowUp') {
-    if (angleStep < 1) angleStep *= 2;
-    if (fractionStep < 1) fractionStep *= 2;
+    if (angleStep > -1e-5 && angleStep < 0) {
+      angleStep *= -1;
+      angleStep *= 2;
+    } else if (angleStep < 0) {
+      angleStep /= 2;
+    } else if (angleStep < 1) {
+      angleStep *= 2;
+    }
+
+    if (fractionStep > -1e-6 && fractionStep < 0) {
+      fractionStep *= -1;
+      fractionStep *= 2;
+    } else if (fractionStep < 0) {
+      fractionStep /= 2;
+    } else if (fractionStep < 1) {
+      fractionStep *= 2;
+    }
   }
   if (e.code === 'ArrowDown') {
-    angleStep /= 2;
-    fractionStep /= 2;
+    if (angleStep < 0) {
+      angleStep *= 2;
+    } else if (angleStep < 1e-5) {
+      angleStep *= -1;
+      angleStep *= 2;
+    } else {
+      angleStep /= 2;
+    }
+
+    if (fractionStep < 0) {
+      fractionStep *= 2;
+    } else if (fractionStep < 1e-6) {
+      fractionStep *= -1;
+      fractionStep *= 2;
+    } else {
+      fractionStep /= 2;
+    }
   }
   if (e.code === 'ArrowRight') {
     mode = 'angle';
@@ -45,6 +75,9 @@ document.addEventListener('keyup', e => {
     mode = 'fraction';
     resetSimulation();
   }
+
+  console.log(angleStep);
+  console.log(fractionStep);
 });
 
 let spots;
